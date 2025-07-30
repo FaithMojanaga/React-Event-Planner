@@ -1,17 +1,21 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import EventPlanner from '../components/EventPlanner';
 
-// Test that the EventPlanner component renders the necessary form elements
-test('renders input fields and Add button', () => {
-  // Render the EventPlanner component in a virtual DOM for testing
+
+
+test('adds event to the list when submitted', () => {
   render(<EventPlanner />);
 
-  // Check if the input for event title is rendered and accessible by label
-  expect(screen.getByLabelText(/event title/i)).toBeInTheDocument();
+  // Simulate typing in event title
+  fireEvent.change(screen.getByLabelText(/event title/i), { target: { value: 'Meeting' } });
 
-  // Check if the input for event date is rendered and accessible by label
-  expect(screen.getByLabelText(/event date/i)).toBeInTheDocument();
+  // Simulate picking event date
+  fireEvent.change(screen.getByLabelText(/event date/i), { target: { value: '2025-08-01' } });
 
-  // Check if the button labeled "Add Event" is rendered and accessible
-  expect(screen.getByRole('button', { name: /add event/i })).toBeInTheDocument();
+  // Click the Add Event button
+  fireEvent.click(screen.getByRole('button', { name: /add event/i }));
+
+  // Assert the event is displayed on the page
+  expect(screen.getByText(/meeting/i)).toBeInTheDocument();
+  expect(screen.getByText(/2025-08-01/i)).toBeInTheDocument();
 });
